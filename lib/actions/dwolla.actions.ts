@@ -3,7 +3,7 @@
 import { Client } from "dwolla-v2";
 
 const getEnvironment = (): "production" | "sandbox" => {
-  const environment = process.env.DWOLLA_ENV as string;
+  const environment = (process.env.DWOLLA_ENV as string) || "sandbox";
 
   switch (environment) {
     case "sandbox":
@@ -17,18 +17,20 @@ const getEnvironment = (): "production" | "sandbox" => {
   }
 };
 
-const dwollaClient = new Client({
-  environment: getEnvironment(),
-  key: process.env.DWOLLA_KEY as string,
-  secret: process.env.DWOLLA_SECRET as string,
-});
+const getDwollaClient = () => {
+  return new Client({
+    environment: getEnvironment(),
+    key: process.env.DWOLLA_KEY as string,
+    secret: process.env.DWOLLA_SECRET as string,
+  });
+};
 
 // Create a Dwolla Funding Source using a Plaid Processor Token
 export const createFundingSource = async (
   options: CreateFundingSourceOptions
 ) => {
   try {
-    return await dwollaClient
+    return await getDwollaClient()
       .post(`customers/${options.customerId}/funding-sources`, {
         name: options.fundingSourceName,
         plaidToken: options.plaidToken,
@@ -41,7 +43,7 @@ export const createFundingSource = async (
 
 export const createOnDemandAuthorization = async () => {
   try {
-    const onDemandAuthorization = await dwollaClient.post(
+    const onDemandAuthorization = await getDwollaClient().post(
       "on-demand-authorizations"
     );
     const authLink = onDemandAuthorization.body._links;
@@ -55,7 +57,7 @@ export const createDwollaCustomer = async (
   newCustomer: NewDwollaCustomerParams
 ) => {
   try {
-    return await dwollaClient
+    return await getDwollaClient()
       .post("customers", newCustomer)
       .then((res) => res.headers.get("location"));
   } catch (err) {
@@ -83,7 +85,7 @@ export const createTransfer = async ({
         value: amount,
       },
     };
-    return await dwollaClient
+    return await getDwollaClient()
       .post("transfers", requestBody)
       .then((res) => res.headers.get("location"));
   } catch (err) {

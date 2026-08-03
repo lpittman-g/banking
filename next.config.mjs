@@ -15,8 +15,12 @@ export default withSentryConfig(nextConfig, {
 
 // Suppresses source map uploading logs during build
 silent: true,
-org: "jsm-x9",
-project: "javascript-nextjs",
+org: process.env.SENTRY_ORG || "jsm-x9",
+project: process.env.SENTRY_PROJECT || "javascript-nextjs",
+// Skip Sentry source-map upload when the CLI binary is unavailable or
+// auth token is missing (e.g. locked-down CI / Docker / offline builds).
+// Source maps can still be uploaded separately by setting SENTRY_AUTH_TOKEN.
+dryRun: !process.env.SENTRY_AUTH_TOKEN,
 }, {
 // For all available options, see:
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/

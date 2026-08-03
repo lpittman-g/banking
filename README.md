@@ -111,23 +111,24 @@ Create a new file named `.env` in the root of your project and add the following
 
 ```env
 #NEXT
-NEXT_PUBLIC_SITE_URL=
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 #APPWRITE
 NEXT_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
 NEXT_PUBLIC_APPWRITE_PROJECT=
 APPWRITE_DATABASE_ID=
 APPWRITE_USER_COLLECTION_ID=
+APPWRITE_ITEM_COLLECTION_ID=
 APPWRITE_BANK_COLLECTION_ID=
 APPWRITE_TRANSACTION_COLLECTION_ID=
-APPWRITE_SECRET=
+NEXT_APPWRITE_KEY=
 
 #PLAID
 PLAID_CLIENT_ID=
 PLAID_SECRET=
-PLAID_ENV=
-PLAID_PRODUCTS=
-PLAID_COUNTRY_CODES=
+PLAID_ENV=sandbox
+PLAID_PRODUCTS=auth,transactions,identity
+PLAID_COUNTRY_CODES=US,CA
 
 #DWOLLA
 DWOLLA_KEY=
@@ -135,6 +136,10 @@ DWOLLA_SECRET=
 DWOLLA_BASE_URL=https://api-sandbox.dwolla.com
 DWOLLA_ENV=sandbox
 
+#SENTRY (optional)
+SENTRY_ORG=
+SENTRY_PROJECT=
+SENTRY_AUTH_TOKEN=
 ```
 
 Replace the placeholder values with your actual respective account credentials. You can obtain these credentials by signing up on the [Appwrite](https://appwrite.io/?utm_source=youtube&utm_content=reactnative&ref=JSmastery), [Plaid](https://plaid.com/) and [Dwolla](https://www.dwolla.com/)
@@ -146,6 +151,17 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the project.
+
+**Deploying**
+
+This project is configured for deployment on [Vercel](https://vercel.com):
+
+1. Push your repository to GitHub.
+2. Import the repository in Vercel.
+3. Add every variable from your `.env` file to the Vercel project settings under **Environment Variables**.
+4. Deploy — `vercel.json` already configures the Next.js framework and build command.
+
+For self-hosted or CI builds, set the environment variables listed above and run `npm ci && npm run build`. Source maps are uploaded to Sentry automatically only when `SENTRY_AUTH_TOKEN` is present; otherwise the build skips the upload step.
 
 ## <a name="snippets">🕸️ Snippets</a>
 
