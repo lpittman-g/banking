@@ -1,7 +1,20 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
 
+const getPlaidEnvironment = () => {
+  const env = process.env.PLAID_ENV || 'sandbox';
+  switch (env) {
+    case 'production':
+      return PlaidEnvironments.production;
+    case 'development':
+      return PlaidEnvironments.development;
+    case 'sandbox':
+    default:
+      return PlaidEnvironments.sandbox;
+  }
+};
+
 const configuration = new Configuration({
-  basePath: PlaidEnvironments.sandbox,
+  basePath: getPlaidEnvironment(),
   baseOptions: {
     headers: {
       'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
