@@ -51,8 +51,10 @@ declare type NewUserParams = {
 
 declare type Account = {
   id: string;
-  availableBalance: number;
-  currentBalance: number;
+  /** Read-only: always sourced from Plaid — never mutate directly. */
+  readonly availableBalance: number;
+  /** Read-only: always sourced from Plaid — never mutate directly. */
+  readonly currentBalance: number;
   officialName: string;
   mask: string;
   institutionId: string;
@@ -80,6 +82,8 @@ declare type Transaction = {
   channel: string;
   senderBankId: string;
   receiverBankId: string;
+  /** Unique key used for idempotency deduplication of BaaS payment webhooks. */
+  idempotencyKey?: string;
 };
 
 declare type Bank = {
@@ -282,12 +286,19 @@ declare interface CreateFundingSourceOptions {
 
 declare interface CreateTransactionProps {
   name: string;
+  /** Amount in DECIMAL(18, 4) string format — e.g. "12.5000". Floats are rejected. */
   amount: string;
   senderId: string;
   senderBankId: string;
   receiverId: string;
   receiverBankId: string;
   email: string;
+  /**
+   * Caller-supplied idempotency key.  Must be unique per transfer attempt.
+   * When omitted the server generates a UUID, but providing an explicit key
+   * (e.g. the Dwolla transfer URL) gives stronger end-to-end deduplication.
+   */
+  idempotencyKey?: string;
 }
 
 declare interface getTransactionsByBankIdProps {

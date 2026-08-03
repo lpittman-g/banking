@@ -1,3 +1,12 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "AssignmentExpression[left.type='MemberExpression'][left.property.name=/^(availableBalance|currentBalance|available_balance|current_balance|balance)$/]",
+        "message": "Direct mutation of balance fields (availableBalance, currentBalance) is forbidden. Account balances are read-only and must be sourced exclusively from Plaid."
+      }
+    ]
+  }
 }
